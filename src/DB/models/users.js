@@ -3,6 +3,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const validator = require('validator');
 // const config = require('config');
+const Wallet = require('../models/wallet')
 
 
 const userSchema = new mongoose.Schema({
@@ -23,7 +24,19 @@ const userSchema = new mongoose.Schema({
 
             }
         }
-
+    },
+    number:{
+        type:String,
+        required:true,
+        unique:true,
+        validate(value){
+            if (!validator.isMobilePhone(value,'any')) {
+                throw new Error('Phone is invalid');
+               }
+               else{
+                   console.log(value,'is valid')
+               }
+        }
     },
     password: {
         type: String,
@@ -43,48 +56,24 @@ const userSchema = new mongoose.Schema({
         }
 
     }],
-    // portfolio: [{
-    //     ticker: {
-    //         type: String,
-    //         required: true,
-    //         trim: true,
-    //         unqiue:false
-    //     },
-    //     shares: {
-    //         type: Number,
-    //         require: true,
-    //     }, 
-    //     avgBuyPrice: {
-    //         type: Number,
-    //         require: true,
-    //         default: 0
-    //     }
-    // }],
-    // history:[{
-    //     type:{
-    //         type: String,
-    //         required: true,
-    //         trim: true,
-    //     },
-    //     ticker: {
-    //         type: String,
-    //         required: true,
-    //         trim: true,
-    //     },
-    //     shares: {
-    //         type: Number,
-    //         require: true,
-    //     }, 
-    //     avgBuyPrice: {
-    //         type: Number,
-    //         require: true,
-    //         default: 0
-    //     }
-    // }],
 }, {
     timestamps: true
 });
+userSchema.virtual('wallet',{
+    ref: 'Wallet',
+    localField:'_id',
+    foreignField:'owner'
+})
+// userSchema.virtual('history',{
+//     ref: 'History',
+//     localField:'_id',
+//     foreignField:'owner'
+// })
 
+
+
+
+//login function
 userSchema.statics.findUserByCredentials = async (email, password) => {
     const user = await User.findOne({
         email
@@ -151,6 +140,11 @@ userSchema.methods.toJSON = function(){
 }
 
 
+userSchema.pre('remove',async function(next)
+{const user = this
+    await Wallet.deleteOne({ owner: user._id })
+    next()
+})
 
 
 

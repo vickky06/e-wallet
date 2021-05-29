@@ -10,10 +10,12 @@
   "author": "vivek singh",
   "license": "ISC",
   "dependencies": {
+    "axios": "^0.21.1",
     "bcrypt": "^3.0.8",
     "bluebird": "^3.7.2",
     "chart.js": "^2.9.3",
     "config": "^3.2.5",
+    "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "hbs": "^4.1.0",
     "jsonwebtoken": "^8.5.1",

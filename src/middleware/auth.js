@@ -1,5 +1,8 @@
 const jwt = require('jsonwebtoken');
 const User = require('../DB/models/users');
+const dotenv = require('dotenv');
+dotenv.config();
+
 // const config = require('config');
 ///const JWT_TOKEN = config.get('jwt_token');
 
@@ -27,7 +30,7 @@ module.exports = auth = async (req, res, next) => {
         // console.log("\n User : "+user)
         req.token = token
         req.user = user
-        
+
 
         next();
     } catch (e) {

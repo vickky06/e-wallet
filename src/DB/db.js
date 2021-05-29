@@ -1,5 +1,9 @@
 const mongoose = require('mongoose');
-const mongoosePort = "mongodb+srv://vivek:ERETdqyacOJ1U6q9@cluster0.bhbbt.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
+const dotenv = require('dotenv');
+dotenv.config();
+
+const mongoosePort = process.env.mongooseURI;
+
 Promise = require('bluebird');
 mongoose.Promise = Promise;
 

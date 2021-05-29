@@ -1,59 +1,54 @@
-# portfolio-App
-This document explains the business requirements of a portfolio tracking API. 
+# ewallet-App
+This document explains the business requirements of a e wallet tracking API. 
 Definitions 
-Securities: A simple definition of a security is any proof of ownership or debt that has been assigned a value and may be sold. Example - Tata Consultancy Services Limited (TCS) one of the companies which became public in 2004 and investors can buy and sell shares of TCS. Currently price of 1 share (can call it quantity also) of TCS is Rs. 1,843.45. All the information is publicly available. Other listed companies - WIPRO (Wipro Limited), GODREJIND (Godrej Industries Ltd). 
-Ticker Symbol: Every listed security has a unique ticker symbol, facilitating the vast array of trade orders that flow through the financial markets every day. Example - ticker for Tata Consultancy Services Limited is TCS, for Wipro Limited it is WIPRO. 
-Portfolio: A portfolio is a grouping of financial assets such as stocks, bonds, commodities, currencies and cash equivalents, as well as their fund counterparts, including mutual, exchange-traded and closed funds. Example - Suppose the following securities are bought - 
-Ticker symbol 
-Average Buy Price 
-Shares
-TCS 
-1,833.45 
-5
-WIPRO 
-319.25 
-10
-GODREJIND 
-535.00 
-2
+A simple e-wallet app to describe and attain regular functonalities of e- wallaet such as
+
+# Requirements
+## Wallet is responsible for having e-cash
+## should be able to add value from bank
+## should be able to show the current balance at any poiint of time
+## should be able to do transection ergo pay for transections.
+## if the paytm wallet >0 but <transection ammount> > balance: DENY transection.
 
 
 
-The above mentioned table constitutes a portfolio. Simply put, portfolio is group of securities with each one having an average price and quantity of shares. 
-Suppose 5 more shares of GODREJIND are bought at Rs 400 (this is called placing a trade in the security). Now portfolio will look like -
-Ticker symbol 
-Average Buy Price 
-Shares
-TCS 
-1,833.45 
-5
-WIPRO 
-319.25 
-10
-GODREJIND 
-(535*2 + 400*5)/(5 + 2) 
-7
+
+```DB : : : Mongo DB```
+User :
+< u-uq-id> [auto populate]
+< user number> [no duplicates allowed ::similar to pk, no null value]
+
+< name >
+< email>
+< pin/password - auth> ##responsible for authenticate
+
+E-Wallet: 
+<wallet-uq-id>[auto populate]
+<u-uq-id> [foreign key]
+<e-cash> [initally 0]
+<bank> <source/source>> :[]  
+<history> [{}]
 
 
 
-Observe carefully how price of GODREJIND is a weighted average of previous average buy price and the current trade price. 
-Now suppose if 5 shares of WIPRO are sold (again by placing a trade), the portfolio will look like 
-Ticker symbol 
-Average Buy Price 
-Shares
-TCS 
-1,833.45 
-5
-WIPRO 
-319.25 
-5
-GODREJIND 
-438.57 
-7
+```End Points:```
+
+User :
+1. /login <post>: [] [JSON body keys : userEmail, password] [header :  bearer auth token]
+2. /logout <post>: [header :  bearer auth token] [] [Reponse : Logs out from current devices]
+3. /logoutAll <post>: [header :  bearer auth token] [] [Reponse : Logs out from all devices]
+4. /signUp <post>: [ ] -- [JSON body keys : [name : String, email:String, number:String, password:String] ]  -- [response: auth token]
+5. /users/me <patch> : [header :  bearer auth token] [JSON body keys : valid Field to update ]-- [success if true for validation]
+6. /users/me <get>: [header :  bearer auth token] [] [returns current details]
 
 
+E-wallet:
+1. /mywallet <get>: [user bearer auth token] [] [results wallet details]
+2. /addBank <patch> : [user bearer auth token] [JSON body key : newBank] [add a new bank to existing list]
+3. /addMoney <post> : [user bearer auth token] [JSON body key : sourceBank, amount :Whole Number] [add value to e-wallet]
+4. /transection <psot>[user bearer auth token] [JSON body key : destination, amount :Whole Number] [does transection if valid]
 
-Observe carefully how average price doesn’t change after selling off a few securities. This is because selling affects your returns, not the average price of the stocks bought. 
+
 
 
 
